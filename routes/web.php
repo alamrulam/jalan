@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ProjectController; // <-- TAMBAHKAN IMPORT INI
 use Illuminate\Support\Facades\Auth;             // <-- TAMBAHKAN IMPORT INI
 use App\Http\Controllers\Pelaksana\ProjectController as PelaksanaProjectController;
 use App\Http\Controllers\Pelaksana\DailyReportController as PelaksanaDailyReportController;
+use App\Http\Controllers\Admin\DailyReportController as AdminDailyReportController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -66,7 +67,15 @@ Route::middleware(['auth', 'pelaksana'])->prefix('pelaksana')->name('pelaksana.'
     Route::post('proyek/{project}/laporan', [PelaksanaDailyReportController::class, 'store'])->name('laporan.store');
     // Rute untuk riwayat laporan pelaksana (nanti)
     // Route::get('laporan/riwayat', [PelaksanaDailyReportController::class, 'history'])->name('laporan.history');
-
-    
 });
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::resource('projects', ProjectController::class); // Ini sudah ada dari Bagian 1
+        Route::resource('reports', AdminDailyReportController::class)->only(['index', 'show', 'edit', 'update']); // Fokus pada index dulu, lalu show, edit, update
+        // Anda bisa menambahkan rute lain yang spesifik di sini jika perlu
+        // Misalnya: Route::post('reports/{report}/verify', [AdminDailyReportController::class, 'verify'])->name('reports.verify');
+        Route::post('reports/{report}/verify', [AdminDailyReportController::class, 'verify'])->name('reports.verify');
+        Route::post('reports/{report}/reject', [AdminDailyReportController::class, 'reject'])->name('reports.reject');
+    });
+    
 require __DIR__ . '/auth.php';
