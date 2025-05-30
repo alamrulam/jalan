@@ -26,6 +26,10 @@
                         <x-nav-link :href="route('pelaksana.projects.index')" :active="request()->routeIs('pelaksana.projects.*')">
                             {{ __('Proyek Saya') }}
                         </x-nav-link>
+                        {{-- Link BARU untuk Riwayat Laporan Saya --}}
+                        <x-nav-link :href="route('pelaksana.reports.history')" :active="request()->routeIs('pelaksana.reports.history')">
+                            {{ __('Riwayat Laporan Saya') }}
+                        </x-nav-link>
                         {{-- Tambahkan link lain untuk pelaksana jika ada, misal riwayat laporan --}}
                     @endif
                 </div>
@@ -98,6 +102,9 @@
             @if (Auth::check() && Auth::user()->role == 'pelaksana')
                 <x-responsive-nav-link :href="route('pelaksana.projects.index')" :active="request()->routeIs('pelaksana.projects.*')">
                     {{ __('Proyek Saya') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('pelaksana.reports.history')" :active="request()->routeIs('pelaksana.reports.history')">
+                    {{ __('Riwayat Laporan Saya') }}
                 </x-responsive-nav-link>
                 {{-- Tambahkan link lain untuk pelaksana jika ada --}}
             @endif

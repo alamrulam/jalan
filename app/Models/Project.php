@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
@@ -19,6 +20,13 @@ class Project extends Model
 
     ];
 
+    /**
+     * Mendapatkan semua laporan harian untuk proyek ini.
+     */
+    public function dailyReports(): HasMany
+    {
+        return $this->hasMany(DailyReport::class);
+    }
     //Definisikan relasi jika ada, misalnya dengan User (Admin)
     public function admin()
     {

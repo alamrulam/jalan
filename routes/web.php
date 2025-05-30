@@ -68,6 +68,10 @@ Route::middleware(['auth', 'pelaksana'])->prefix('pelaksana')->name('pelaksana.'
     Route::post('proyek/{project}/laporan', [PelaksanaDailyReportController::class, 'store'])->name('laporan.store');
     // Rute untuk riwayat laporan pelaksana (nanti)
     // Route::get('laporan/riwayat', [PelaksanaDailyReportController::class, 'history'])->name('laporan.history');
+    // Rute BARU untuk Riwayat Laporan Pelaksana
+    Route::get('laporan-saya', [PelaksanaDailyReportController::class, 'history'])->name('reports.history');
+    // Rute opsional untuk detail laporan pelaksana
+    Route::get('laporan-saya/{report}', [PelaksanaDailyReportController::class, 'showReportDetail'])->name('reports.showDetail');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
