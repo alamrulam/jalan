@@ -57,7 +57,7 @@
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
                 </div>
-                <div>
+                <div class="flex space-x-2">
                     {{-- Tombol Ekspor PDF --}}
                     <a href="#" id="exportPdfButton"
                         class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-800 focus:outline-none focus:border-red-900 focus:ring ring-red-300 disabled:opacity-25 transition ease-in-out duration-150">
@@ -68,6 +68,16 @@
                             </path>
                         </svg>
                         Ekspor ke PDF
+                    </a>
+                    {{-- Tombol Ekspor Excel BARU --}}
+                    <a href="#" id="exportExcelButton"
+                        class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-800 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150">
+                        <svg class="w-4 h-4 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Ekspor Excel
                     </a>
                 </div>
                 <div class="mt-4 flex justify-end space-x-2">
@@ -200,6 +210,18 @@
                 });
             } else {
                 console.error('Tombol ekspor dengan ID "exportPdfButton" tidak ditemukan.');
+            }
+
+            // Script BARU untuk tombol Excel
+            const exportExcelBtn = document.getElementById('exportExcelButton');
+            if (exportExcelBtn) {
+                exportExcelBtn.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const filterForm = document.getElementById('filterForm');
+                    const formData = new FormData(filterForm);
+                    const params = new URLSearchParams(formData).toString();
+                    window.location.href = "{{ route('admin.reports.export.excel') }}" + (params ? '?' + params : '');
+                });
             }
         </script>
     @endpush

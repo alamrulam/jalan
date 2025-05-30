@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;             // <-- TAMBAHKAN IMPORT INI
 use App\Http\Controllers\Pelaksana\ProjectController as PelaksanaProjectController;
 use App\Http\Controllers\Pelaksana\DailyReportController as PelaksanaDailyReportController;
 use App\Http\Controllers\Admin\DailyReportController as AdminDailyReportController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -80,5 +81,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Rute baru untuk Ekspor PDF Laporan Harian
     Route::get('reports/export/pdf', [AdminDailyReportController::class, 'exportPdf'])->name('reports.export.pdf');
 
+    // Rute baru untuk Ekspor Excel Laporan Harian
+    Route::get('reports/export/excel', [AdminDailyReportController::class, 'exportExcel'])->name('reports.export.excel');
 });
 require __DIR__ . '/auth.php';

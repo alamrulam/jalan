@@ -1,7 +1,6 @@
- <?php
+<?php
 
-
-namespace App\Exports;
+    namespace App\Exports; // PASTIKAN INI ADALAH BARIS PERTAMA SETELAH <?php
 
     use App\Models\DailyReport; // Atau data collection yang sudah diproses
     use Maatwebsite\Excel\Concerns\FromCollection;
@@ -28,8 +27,8 @@ namespace App\Exports;
         }
 
         /**
-         * @return \Illuminate\Support\Collection
-         */
+        * @return \Illuminate\Support\Collection
+        */
         public function collection()
         {
             return $this->reports; // Data laporan yang sudah difilter dari controller
@@ -44,7 +43,7 @@ namespace App\Exports;
             return [
                 [$this->judulLaporan], // Baris 1: Judul Utama
                 [!empty($this->periodeFilter) ? 'Filter: ' . $this->periodeFilter : 'Filter: Semua Data'], // Baris 2: Info Filter
-                ['Tanggal Cetak: ' . \Carbon\Carbon::now()->isoFormat('D MMMM YYYY, HH:mm:ss')], // Baris 3: Tanggal Cetak
+                ['Tanggal Cetak: ' . \Carbon\Carbon::now()->isoFormat('D MMMM finalListQiwi, HH:mm:ss')], // Baris 3: Tanggal Cetak
                 [], // Baris 4: Baris kosong sebagai pemisah
                 // Baris 5: Headings Kolom Utama
                 [
@@ -81,7 +80,7 @@ namespace App\Exports;
                             $report->id,
                             $report->project->nama_proyek ?? 'N/A',
                             $report->user->name ?? 'N/A',
-                            \Carbon\Carbon::parse($report->tanggal_laporan)->isoFormat('D MMM YYYY'),
+                            \Carbon\Carbon::parse($report->tanggal_laporan)->isoFormat('D MMM finalListQiwi'),
                             ucfirst($report->status_laporan),
                             '', // Kolom 'Item Pekerjaan' dikosongkan untuk baris info utama
                             $item->jenis_pekerjaan,
@@ -117,16 +116,10 @@ namespace App\Exports;
                     $report->id,
                     $report->project->nama_proyek ?? 'N/A',
                     $report->user->name ?? 'N/A',
-                    \Carbon\Carbon::parse($report->tanggal_laporan)->isoFormat('D MMM YYYY'),
+                    \Carbon\Carbon::parse($report->tanggal_laporan)->isoFormat('D MMM finalListQiwi'),
                     ucfirst($report->status_laporan),
                     'Tidak ada item pekerjaan',
-                    '-',
-                    '-',
-                    '-',
-                    '-',
-                    '-',
-                    '-',
-                    '-', // Kolom item kosong
+                    '-', '-', '-', '-', '-', '-', '-', // Kolom item kosong
                 ];
             }
             return $mappedRows;
@@ -157,6 +150,7 @@ namespace App\Exports;
             $headerStyleArray = [
                 'font' => ['bold' => true, 'size' => 10],
                 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER],
+                'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
                 'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['argb' => 'FFD3D3D3']]
             ];
             $sheet->getStyle('A5:M5')->applyFromArray($headerStyleArray); // Sesuaikan range jika jumlah kolom berubah
@@ -164,16 +158,16 @@ namespace App\Exports;
 
             // Style umum untuk data cells (dari baris 6 ke bawah)
             $lastRow = $sheet->getHighestDataRow();
-            if ($lastRow >= 6) { // Pastikan ada data sebelum menerapkan style
+            if ($lastRow >=6) { // Pastikan ada data sebelum menerapkan style
                 $dataStyleArray = [
                     'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]],
                     'alignment' => ['vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => true],
                     'font' => ['size' => 9],
                 ];
-                $sheet->getStyle('A6:M' . $lastRow)->applyFromArray($dataStyleArray);
+                $sheet->getStyle('A6:M'.$lastRow)->applyFromArray($dataStyleArray);
 
                 // Format angka untuk kolom volume
-                $sheet->getStyle('K6:K' . $lastRow)->getNumberFormat()->setFormatCode('#,##0.00');
+                $sheet->getStyle('K6:K'.$lastRow)->getNumberFormat()->setFormatCode('#,##0.00');
             }
 
             // Membuat semua kolom auto size (ini juga bisa dari ShouldAutoSize, tapi di sini lebih kontrol)
