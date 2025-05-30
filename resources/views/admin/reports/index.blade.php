@@ -11,7 +11,7 @@
     @section('content')
         {{-- Bagian Filter (Contoh Sederhana, bisa dikembangkan) --}}
         <div class="mb-6 p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
-            <form method="GET" action="{{ route('admin.reports.index') }}">
+            <form method="GET" action="{{ route('admin.reports.index') }}" id="filterForm">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
                         <label for="project_id_filter"
@@ -56,6 +56,19 @@
                             value="{{ request('tanggal_sampai') }}"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
+                </div>
+                <div>
+                    {{-- Tombol Ekspor PDF --}}
+                    <a href="#" id="exportPdfButton"
+                        class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-800 focus:outline-none focus:border-red-900 focus:ring ring-red-300 disabled:opacity-25 transition ease-in-out duration-150">
+                        <svg class="w-4 h-4 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                        Ekspor ke PDF
+                    </a>
                 </div>
                 <div class="mt-4 flex justify-end space-x-2">
                     <a href="{{ route('admin.reports.index') }}"
@@ -159,3 +172,34 @@
             {{ $reports->appends(request()->query())->links() }}
         </div>
     @endsection
+    @push('scripts')
+        <script>
+            const exportButton = document.getElementById('exportPdfButton');
+            console.log('Tombol Ekspor Ditemukan:', exportButton); // Cek apakah tombol ditemukan
+
+            if (exportButton) {
+                exportButton.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    console.log('Tombol Ekspor PDF diklik!'); // Cek apakah event listener berjalan
+
+                    const filterForm = document.getElementById('filterForm');
+                    console.log('Form Filter Ditemukan:', filterForm); // Cek apakah form ditemukan
+
+                    if (filterForm) {
+                        const formData = new FormData(filterForm);
+                        const params = new URLSearchParams(formData).toString();
+                        console.log('Parameter Filter:', params); // Cek parameter yang terbentuk
+
+                        const exportUrl = "{{ route('admin.reports.export.pdf') }}" + (params ? '?' + params : '');
+                        console.log('URL Ekspor yang Akan Dituju:', exportUrl); // Cek URL akhir
+
+                        window.location.href = exportUrl;
+                    } else {
+                        console.error('Form filter dengan ID "filterForm" tidak ditemukan.');
+                    }
+                });
+            } else {
+                console.error('Tombol ekspor dengan ID "exportPdfButton" tidak ditemukan.');
+            }
+        </script>
+    @endpush

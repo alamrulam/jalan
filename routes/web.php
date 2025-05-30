@@ -70,12 +70,15 @@ Route::middleware(['auth', 'pelaksana'])->prefix('pelaksana')->name('pelaksana.'
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::resource('projects', ProjectController::class); // Ini sudah ada dari Bagian 1
-        Route::resource('reports', AdminDailyReportController::class)->only(['index', 'show', 'edit', 'update']); // Fokus pada index dulu, lalu show, edit, update
-        // Anda bisa menambahkan rute lain yang spesifik di sini jika perlu
-        // Misalnya: Route::post('reports/{report}/verify', [AdminDailyReportController::class, 'verify'])->name('reports.verify');
-        Route::post('reports/{report}/verify', [AdminDailyReportController::class, 'verify'])->name('reports.verify');
-        Route::post('reports/{report}/reject', [AdminDailyReportController::class, 'reject'])->name('reports.reject');
-    });
-    
+    Route::resource('projects', ProjectController::class); // Ini sudah ada dari Bagian 1
+    Route::resource('reports', AdminDailyReportController::class)->only(['index', 'show', 'edit', 'update']); // Fokus pada index dulu, lalu show, edit, update
+    // Anda bisa menambahkan rute lain yang spesifik di sini jika perlu
+    // Misalnya: Route::post('reports/{report}/verify', [AdminDailyReportController::class, 'verify'])->name('reports.verify');
+    Route::post('reports/{report}/verify', [AdminDailyReportController::class, 'verify'])->name('reports.verify');
+    Route::post('reports/{report}/reject', [AdminDailyReportController::class, 'reject'])->name('reports.reject');
+
+    // Rute baru untuk Ekspor PDF Laporan Harian
+    Route::get('reports/export/pdf', [AdminDailyReportController::class, 'exportPdf'])->name('reports.export.pdf');
+
+});
 require __DIR__ . '/auth.php';
