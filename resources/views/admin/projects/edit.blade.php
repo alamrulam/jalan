@@ -65,7 +65,33 @@
                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
             @enderror
         </div>
-
+        {{-- BAGIAN BARU UNTUK MENUGASKAN PELAKSANA --}}
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Tugaskan Pelaksana</h3>
+            <div>
+                <label for="pelaksana_ids" class="block font-medium text-sm text-gray-700 dark:text-gray-300 mb-1">Pilih
+                    Pelaksana (bisa lebih dari satu):</label>
+                <select name="pelaksana_ids[]" id="pelaksana_ids" multiple
+                    class="block w-full h-40 rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    @foreach ($pelaksanas as $pelaksana)
+                        <option value="{{ $pelaksana->id }}" {{-- Cek apakah pelaksana ini sudah ada di array pelaksana yang ditugaskan --}}
+                            {{ in_array($pelaksana->id, old('pelaksana_ids', $assignedPelaksanaIds ?? [])) ? 'selected' : '' }}>
+                            {{ $pelaksana->name }} ({{ $pelaksana->email }})
+                        </option>
+                    @endforeach
+                </select>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Tahan Ctrl (atau Cmd di Mac) untuk memilih lebih
+                    dari satu.</p>
+                @error('pelaksana_ids')
+                    <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                @enderror
+                @error('pelaksana_ids.*')
+                    {{-- Untuk error pada setiap item array --}}
+                    <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
+        {{-- AKHIR BAGIAN BARU --}}
         <div class="flex items-center justify-end mt-6 pt-6 border-t border-gray-200">
             <a href="{{ route('admin.projects.index') }}"
                 class="px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150">
@@ -78,3 +104,4 @@
         </div>
     </form>
 @endsection
+
