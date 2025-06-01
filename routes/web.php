@@ -72,6 +72,8 @@ Route::middleware(['auth', 'pelaksana'])->prefix('pelaksana')->name('pelaksana.'
     Route::get('laporan-saya', [PelaksanaDailyReportController::class, 'history'])->name('reports.history');
     // Rute opsional untuk detail laporan pelaksana
     Route::get('laporan-saya/{report}', [PelaksanaDailyReportController::class, 'showReportDetail'])->name('reports.showDetail');
+    Route::get('laporan-saya/{report}/edit-revisi', [PelaksanaDailyReportController::class, 'editRevision'])->name('reports.editRevision');
+    Route::put('laporan-saya/{report}/update-revisi', [PelaksanaDailyReportController::class, 'updateRevision'])->name('reports.updateRevision');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

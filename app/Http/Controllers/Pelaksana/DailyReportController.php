@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DailyReport;
 use App\Models\Project;
 use App\Models\ReportItem;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB; // Untuk transaction
@@ -175,5 +176,99 @@ class DailyReportController extends Controller
         $report->load(['project', 'reportItems']); // Eager load relasi
 
         return view('pelaksana.reports.show_detail', compact('report'));
+    }
+
+    /**
+     * Menampilkan form untuk mengedit/merevisi laporan harian yang ditolak.
+     */
+    public function editRevision(DailyReport $report)
+    {
+        // Pastikan laporan ini milik pelaksana yang sedang login dan statusnya 'rejected'
+        if ($report->user_id !== Auth::id() || $report->status_laporan !== 'rejected') {
+            return redirect()->route('pelaksana.reports.history')->with('error', 'Laporan ini tidak bisa direvisi.');
+        }
+
+        $report->load('reportItems'); // Eager load report items
+        $jenisPekerjaanOptions = array_keys($this->jenisPekerjaanConfig);
+        $project = $report->project; // Ambil data proyek terkait
+
+        return view('pelaksana.reports.edit_revision', compact('report', 'project', 'jenisPekerjaanOptions'));
+    }
+
+    /**
+     * Menyimpan perubahan pada laporan harian yang direvisi.
+     */
+    public function updateRevision(Request $request, DailyReport $report)
+    {
+        // Pastikan laporan ini milik pelaksana yang sedang login dan statusnya 'rejected'
+        if ($report->user_id !== Auth::id() || $report->status_laporan !== 'rejected') {
+            return redirect()->route('pelaksana.reports.history')->with('error', 'Laporan ini tidak bisa direvisi.');
+        }
+
+        // Validasi sama seperti method store() di Bagian 3
+        $validatedData = $request->validate([
+            'tanggal_laporan' => 'required|date|before_or_equal:today',
+            'items' => 'required|array|min:1',
+            'items.*.jenis_pekerjaan' => ['required', 'string', Rule::in(array_keys($this->jenisPekerjaanConfig))],
+            'items.*.panjang' => 'nullable|numeric|min:0',
+            'items.*.lebar' => 'nullable|numeric|min:0',
+            'items.*.tinggi_atau_tebal' => 'nullable|numeric|min:0',
+            'items.*.catatan_item' => 'nullable|string|max:1000',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // Update data utama DailyReport
+            $report->tanggal_laporan = $validatedData['tanggal_laporan'];
+            $report->status_laporan = 'pending'; // Ubah status kembali ke pending (atau 'revisi_pending')
+            $report->catatan_admin = null; // Hapus catatan admin sebelumnya
+            $report->save();
+
+            // Hapus report items lama
+            $report->reportItems()->delete();
+
+            // Tambahkan report items baru (sama seperti logika di store())
+            foreach ($validatedData['items'] as $itemData) {
+                $jenisPekerjaan = $itemData['jenis_pekerjaan'];
+                $panjang = $itemData['panjang'] ?? null;
+                $lebar = $itemData['lebar'] ?? null;
+                $tinggi = $itemData['tinggi_atau_tebal'] ?? null;
+                $volumeDihitung = 0;
+                $satuanVolume = '-';
+
+                $requiredDimensions = $this->jenisPekerjaanConfig[$jenisPekerjaan] ?? [];
+                foreach ($requiredDimensions as $dim) {
+                    if (!isset($itemData[$dim]) || !is_numeric($itemData[$dim]) || $itemData[$dim] <= 0) {
+                        DB::rollBack();
+                        return back()->withErrors(['items' => "Dimensi '{$dim}' wajib diisi dan valid untuk pekerjaan '{$jenisPekerjaan}'."])->withInput();
+                    }
+                }
+
+                if ($jenisPekerjaan == 'Pembersihan Lokasi' || $jenisPekerjaan == 'Alas Plastik') {
+                    $volumeDihitung = ($panjang ?? 0) * ($lebar ?? 0);
+                    $satuanVolume = 'm²';
+                } elseif (in_array($jenisPekerjaan, ['Leveling Rataan', 'Cor Beton', 'Urugan Sirtu (Begisting)'])) {
+                    $volumeDihitung = ($panjang ?? 0) * ($lebar ?? 0) * ($tinggi ?? 0);
+                    $satuanVolume = 'm³';
+                }
+
+                ReportItem::create([
+                    'daily_report_id' => $report->id,
+                    'jenis_pekerjaan' => $jenisPekerjaan,
+                    'panjang' => $panjang,
+                    'lebar' => $lebar,
+                    'tinggi_atau_tebal' => $tinggi,
+                    'volume_dihitung' => $volumeDihitung,
+                    'satuan_volume' => $satuanVolume,
+                    'catatan_item' => $itemData['catatan_item'] ?? null,
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->route('pelaksana.reports.history')->with('success', 'Laporan berhasil direvisi dan dikirim ulang.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan saat merevisi laporan: ' . $e->getMessage())->withInput();
+        }
     }
 }
