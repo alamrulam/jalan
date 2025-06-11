@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;             // <-- TAMBAHKAN IMPORT INI
 use App\Http\Controllers\Pelaksana\ProjectController as PelaksanaProjectController;
 use App\Http\Controllers\Pelaksana\DailyReportController as PelaksanaDailyReportController;
 use App\Http\Controllers\Admin\DailyReportController as AdminDailyReportController;
+use App\Http\Controllers\Admin\DashboardController; // Tambahkan ini di atas
+use App\Http\Controllers\Admin\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,13 +33,11 @@ Route::get('/dashboard', function () {
     // Middleware 'auth' sudah menangani ini, tapi double check tidak masalah
     if (Auth::check()) {
         if (Auth::user()->role == 'admin') {
-            return redirect()->route('admin.projects.index');
+            return redirect()->route('admin.dashboard');
         } elseif (Auth::user()->role == 'pelaksana') {
             return redirect()->route('pelaksana.projects.index'); // Arahkan pelaksana ke daftar proyeknya
         }
     }
-    return view('dashboard');
-
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -52,6 +52,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('projects', ProjectController::class);
     // Rute admin lainnya bisa ditambahkan di sini jika ada
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('users', UserController::class);
 });
 
 
