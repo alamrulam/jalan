@@ -36,7 +36,7 @@
                                 Laporan</label>
                             <input type="date" id="tanggal_laporan" name="tanggal_laporan"
                                 value="{{ old('tanggal_laporan', date('Y-m-d')) }}"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-sky-500 dark:focus:border-sky-500"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500"
                                 required>
                             @error('tanggal_laporan')
                                 <p class="mt-2 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -62,7 +62,7 @@
                                         class="block mb-1 text-xs font-medium text-gray-900 dark:text-white">Jenis
                                         Pekerjaan</label>
                                     <select name="items[0][jenis_pekerjaan]"
-                                        class="jenis-pekerjaan-select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-sky-500 dark:focus:border-sky-500"
+                                        class="jenis-pekerjaan-select bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500"
                                         required>
                                         <option value="">-- Pilih Jenis Pekerjaan --</option>
                                         @foreach ($jenisPekerjaanOptions as $option)
@@ -77,14 +77,14 @@
                                             class="block mb-1 text-xs font-medium text-gray-900 dark:text-white">Panjang
                                             (m)</label>
                                         <input type="number" step="0.01" name="items[0][panjang]" placeholder="0.00"
-                                            class="panjang-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-sky-500 dark:focus:border-sky-500">
+                                            class="panjang-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500">
                                     </div>
                                     <div>
                                         <label for="items[0][lebar]"
                                             class="block mb-1 text-xs font-medium text-gray-900 dark:text-white">Lebar
                                             (m)</label>
                                         <input type="number" step="0.01" name="items[0][lebar]" placeholder="0.00"
-                                            class="lebar-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-sky-500 dark:focus:border-sky-500">
+                                            class="lebar-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500">
                                     </div>
                                     <div>
                                         <label for="items[0][tinggi_atau_tebal]"
@@ -92,7 +92,7 @@
                                             (m)</label>
                                         <input type="number" step="0.01" name="items[0][tinggi_atau_tebal]"
                                             placeholder="0.00"
-                                            class="tinggi-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-sky-500 dark:focus:border-sky-500">
+                                            class="tinggi-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500">
                                     </div>
                                 </div>
 
@@ -106,7 +106,7 @@
                                         class="block mb-1 text-xs font-medium text-gray-900 dark:text-white">Catatan
                                         Item (Opsional)</label>
                                     <textarea name="items[0][catatan_item]" rows="2" placeholder="Catatan tambahan untuk item ini..."
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-sky-500 dark:focus:border-sky-500"></textarea>
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500"></textarea>
                                 </div>
                             </div>
                         </div>

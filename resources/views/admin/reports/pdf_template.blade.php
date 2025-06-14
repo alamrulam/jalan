@@ -134,7 +134,7 @@
             </tr>
             <tr>
                 <td><strong>Tanggal Cetak:</strong></td>
-                <td>{{ \Carbon\Carbon::now()->isoFormat('dddd, D MMMM finalListQiwi, HH:mm:ss') }}</td>
+                <td>{{ \Carbon\Carbon::now()->isoFormat('dddd, D MMMM YYYY') }}</td>
             </tr>
         </table>
 

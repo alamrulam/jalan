@@ -29,6 +29,10 @@
                     @endif
 
                     @if (Auth::check() && Auth::user()->role == 'pelaksana')
+                        {{-- Link Dashboard Pelaksana --}}
+                        {{-- <x-nav-link :href="route('pelaksana.dashboard')" :active="request()->routeIs('pelaksana.dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link> --}}
                         <x-nav-link :href="route('pelaksana.projects.index')" :active="request()->routeIs('pelaksana.projects.*')">
                             {{ __('Proyek Saya') }}
                         </x-nav-link>
@@ -87,6 +91,10 @@
             @endif
 
             @if (Auth::check() && Auth::user()->role == 'pelaksana')
+                {{-- Link Dashboard Pelaksana --}}
+                {{-- <x-responsive-nav-link :href="route('pelaksana.dashboard')" :active="request()->routeIs('pelaksana.dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link> --}}
                 <x-responsive-nav-link :href="route('pelaksana.projects.index')" :active="request()->routeIs('pelaksana.projects.*')">
                     {{ __('Proyek Saya') }}
                 </x-responsive-nav-link>

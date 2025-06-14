@@ -48,7 +48,7 @@
                                     class="bg-gray-50 dark:bg-gray-700/50 px-4 py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                     <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Tanggal Mulai</dt>
                                     <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                                        {{ \Carbon\Carbon::parse($project->tanggal_mulai)->isoFormat('dddd, D MMMM finalListQiwi') }}
+                                        {{ \Carbon\Carbon::parse($project->tanggal_mulai)->isoFormat('dddd, D MMMM YYYY') }}
                                     </dd>
                                 </div>
                                 <div
@@ -56,7 +56,7 @@
                                     <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Tanggal Selesai
                                     </dt>
                                     <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                                        {{ \Carbon\Carbon::parse($project->tanggal_selesai)->isoFormat('dddd, D MMMM finalListQiwi') }}
+                                        {{ \Carbon\Carbon::parse($project->tanggal_selesai)->isoFormat('dddd, D MMMM YYYY') }}
                                     </dd>
                                 </div>
                             </dl>

@@ -9,6 +9,7 @@ use App\Http\Controllers\Pelaksana\DailyReportController as PelaksanaDailyReport
 use App\Http\Controllers\Admin\DailyReportController as AdminDailyReportController;
 use App\Http\Controllers\Admin\DashboardController; // Tambahkan ini di atas
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Pelaksana\DashboardController as PelaksanaDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +36,7 @@ Route::get('/dashboard', function () {
         if (Auth::user()->role == 'admin') {
             return redirect()->route('admin.dashboard');
         } elseif (Auth::user()->role == 'pelaksana') {
-            return redirect()->route('pelaksana.projects.index'); // Arahkan pelaksana ke daftar proyeknya
+            return redirect()->route('pelaksana.dashboard'); // Arahkan pelaksana ke daftar proyeknya
         }
     }
     return view('dashboard');
@@ -57,13 +58,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 
-Route::middleware(['auth', 'pelaksana'])->prefix('pelaksana')->name('pelaksana.')->group(function () {
-    Route::get('proyek-saya', [PelaksanaProjectController::class, 'index'])->name('projects.index');
-    // Rute untuk form input laporan harian (akan dibuat di Bagian 3)
-    // Contoh: Route::get('proyek/{project}/laporan/buat', [NamaControllerLaporan::class, 'create'])->name('laporan.create');
-});
+// Route::middleware(['auth', 'pelaksana'])->prefix('pelaksana')->name('pelaksana.')->group(function () {
+//     Route::get('proyek-saya', [PelaksanaProjectController::class, 'index'])->name('projects.index');
+//     // Rute untuk form input laporan harian (akan dibuat di Bagian 3)
+//     // Contoh: Route::get('proyek/{project}/laporan/buat', [NamaControllerLaporan::class, 'create'])->name('laporan.create');
+// });
 
 Route::middleware(['auth', 'pelaksana'])->prefix('pelaksana')->name('pelaksana.')->group(function () {
+    Route::get('dashboard', [PelaksanaDashboardController::class, 'index'])->name('dashboard');
     Route::get('proyek-saya', [PelaksanaProjectController::class, 'index'])->name('projects.index');
     // Rute untuk form input laporan harian
     Route::get('proyek/{project}/laporan/buat', [PelaksanaDailyReportController::class, 'create'])->name('laporan.create');
