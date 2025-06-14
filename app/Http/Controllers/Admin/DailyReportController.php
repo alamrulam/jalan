@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use Barryvdh\DomPDF\Facade\Pdf; // Atau use PDF; jika alias 'PDF' sudah Anda daftarkan di config/app.php
 use App\Exports\DailyReportsExport; // Import Export Class Anda
-    use Maatwebsite\Excel\Facades\Excel; // Import fasad Excel
+use Maatwebsite\Excel\Facades\Excel; // Import fasad Excel
 class DailyReportController extends Controller
 {
     /**
@@ -98,19 +98,19 @@ class DailyReportController extends Controller
         // Logika pengambilan data sama dengan method index(),
         // tapi tanpa paginasi karena kita ingin semua data yang terfilter.
         $query = DailyReport::with(['project', 'user', 'reportItems']) // Eager load reportItems juga
-                            ->latest('tanggal_laporan')
-                            ->latest('id');
+            ->latest('tanggal_laporan')
+            ->latest('id');
 
-        if ($request->has('status_laporan') && $request->status_laporan != '') {
+        if ($request->filled('status_laporan')) {
             $query->where('status_laporan', $request->status_laporan);
         }
-        if ($request->has('project_id') && $request->project_id != '') {
+        if ($request->filled('project_id')) {
             $query->where('project_id', $request->project_id);
         }
-        if ($request->has('tanggal_dari') && $request->tanggal_dari != '') {
+        if ($request->filled('tanggal_dari')) {
             $query->whereDate('tanggal_laporan', '>=', $request->tanggal_dari);
         }
-        if ($request->has('tanggal_sampai') && $request->tanggal_sampai != '') {
+        if ($request->filled('tanggal_sampai')) {
             $query->whereDate('tanggal_laporan', '<=', $request->tanggal_sampai);
         }
 
@@ -124,11 +124,16 @@ class DailyReportController extends Controller
         $dataUntukPdf = [
             'reports' => $reports,
             'judulLaporan' => 'Laporan Harian Proyek',
-            'periodeFilter' => $this->buatPeriodeFilterText($request), // Memanggil helper function
+            'periodeFilter' => $this->buatPeriodeFilterText($request),
+            'dicetakOleh' => auth()->user()->name, // Menambahkan nama admin yang mencetak
         ];
 
         // Load view PDF dengan data
         $pdf = Pdf::loadView('admin.reports.pdf_template', $dataUntukPdf);
+
+        
+        // Atur orientasi menjadi landscape
+        $pdf->setPaper('a4', 'landscape');
 
         // Atur nama file PDF yang akan di-download
         $namaFile = 'laporan_harian_proyek_' . date('Y-m-d_His') . '.pdf';
@@ -164,41 +169,39 @@ class DailyReportController extends Controller
         return implode(', ', $texts);
     }
 
-     /**
-         * Mengekspor data laporan harian ke Excel.
-         */
-        public function exportExcel(Request $request)
-        {
-            // Logika pengambilan data sama dengan method exportPdf()
-            $query = DailyReport::with(['project', 'user', 'reportItems'])
-                                ->latest('tanggal_laporan')
-                                ->latest('id');
+    /**
+     * Mengekspor data laporan harian ke Excel.
+     */
+    public function exportExcel(Request $request)
+    {
+        // Logika pengambilan data sama dengan method exportPdf()
+        $query = DailyReport::with(['project', 'user', 'reportItems'])
+            ->latest('tanggal_laporan')
+            ->latest('id');
 
-            if ($request->has('status_laporan') && $request->status_laporan != '') {
-                $query->where('status_laporan', $request->status_laporan);
-            }
-            if ($request->has('project_id') && $request->project_id != '') {
-                $query->where('project_id', $request->project_id);
-            }
-            if ($request->has('tanggal_dari') && $request->tanggal_dari != '') {
-                $query->whereDate('tanggal_laporan', '>=', $request->tanggal_dari);
-            }
-            if ($request->has('tanggal_sampai') && $request->tanggal_sampai != '') {
-                $query->whereDate('tanggal_laporan', '<=', $request->tanggal_sampai);
-            }
-
-            $reports = $query->get();
-
-            if ($reports->isEmpty()) {
-                return redirect()->back()->with('error', 'Tidak ada data laporan untuk diekspor berdasarkan filter yang dipilih.');
-            }
-
-            $periodeFilter = $this->buatPeriodeFilterText($request);
-            $judulLaporan = 'Laporan Harian Proyek';
-            $namaFile = 'laporan_harian_proyek_' . date('Y-m-d_His') . '.xlsx';
-
-            return Excel::download(new DailyReportsExport($reports, $periodeFilter, $judulLaporan), $namaFile);
+        if ($request->has('status_laporan') && $request->status_laporan != '') {
+            $query->where('status_laporan', $request->status_laporan);
         }
-   
+        if ($request->has('project_id') && $request->project_id != '') {
+            $query->where('project_id', $request->project_id);
+        }
+        if ($request->has('tanggal_dari') && $request->tanggal_dari != '') {
+            $query->whereDate('tanggal_laporan', '>=', $request->tanggal_dari);
+        }
+        if ($request->has('tanggal_sampai') && $request->tanggal_sampai != '') {
+            $query->whereDate('tanggal_laporan', '<=', $request->tanggal_sampai);
+        }
 
+        $reports = $query->get();
+
+        if ($reports->isEmpty()) {
+            return redirect()->back()->with('error', 'Tidak ada data laporan untuk diekspor berdasarkan filter yang dipilih.');
+        }
+
+        $periodeFilter = $this->buatPeriodeFilterText($request);
+        $judulLaporan = 'Laporan Harian Proyek';
+        $namaFile = 'laporan_harian_proyek_' . date('Y-m-d_His') . '.xlsx';
+
+        return Excel::download(new DailyReportsExport($reports, $periodeFilter, $judulLaporan), $namaFile);
+    }
 }  // <-- PASTIKAN INI ADALAH KURUNG KURAWAL PENUTUP TERAKHIR UNTUK CLASS

@@ -22,7 +22,7 @@
                         <label for="nama_proyek" class="block font-medium text-sm text-gray-700 dark:text-gray-600 mb-1">Nama
                             Proyek</label>
                         <input id="nama_proyek"
-                            class="block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-800 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            class="block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                             type="text" name="nama_proyek" value="{{ old('nama_proyek', $project->nama_proyek) }}"
                             required autofocus />
                         @error('nama_proyek')
@@ -33,7 +33,7 @@
                         <label for="lokasi"
                             class="block font-medium text-sm text-gray-700 dark:text-gray-600 mb-1">Lokasi</label>
                         <input id="lokasi"
-                            class="block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-800 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                            class="block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                             type="text" name="lokasi" value="{{ old('lokasi', $project->lokasi) }}" required />
                         @error('lokasi')
                             <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -44,7 +44,7 @@
                     <label for="tanggal_mulai"
                         class="block font-medium text-sm text-gray-700 dark:text-gray-600 mb-1">Tanggal Mulai</label>
                     <input id="tanggal_mulai"
-                        class="block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-800 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        class="block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                         type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai', $project->tanggal_mulai) }}"
                         required />
                     @error('tanggal_mulai')
@@ -55,7 +55,7 @@
                     <label for="tanggal_selesai"
                         class="block font-medium text-sm text-gray-700 dark:text-gray-600 mb-1">Tanggal Selesai</label>
                     <input id="tanggal_selesai"
-                        class="block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-800 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        class="block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                         type="date" name="tanggal_selesai"
                         value="{{ old('tanggal_selesai', $project->tanggal_selesai) }}" required />
                     @error('tanggal_selesai')
@@ -66,7 +66,7 @@
                     <label for="jenis_proyek" class="block font-medium text-sm text-gray-700 dark:text-gray-600 mb-1">Jenis
                         Proyek</label>
                     <input id="jenis_proyek"
-                        class="block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-800 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        class="block w-full rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                         type="text" name="jenis_proyek" value="{{ old('jenis_proyek', $project->jenis_proyek) }}"
                         required />
                     @error('jenis_proyek')

@@ -1,175 +1,214 @@
- <!DOCTYPE html>
- <html lang="id">
+<!DOCTYPE html>
+<html lang="id">
 
- <head>
-     <meta charset="UTF-8">
-     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-     <title>{{ $judulLaporan ?? 'Laporan Harian Proyek' }}</title>
-     <style>
-         body {
-             font-family: 'DejaVu Sans', sans-serif;
-             margin: 0;
-             font-size: 10px;
-         }
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{{ $judulLaporan ?? 'Laporan Harian Proyek' }}</title>
+    <style>
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            margin: 0;
+            font-size: 9px;
+            color: #333;
+        }
 
-         .container {
-             padding: 20px;
-         }
+        .page-break {
+            page-break-after: always;
+        }
 
-         .header {
-             text-align: center;
-             margin-bottom: 20px;
-         }
+        .header-table {
+            width: 100%;
+            border-bottom: 1px solid #000;
+            margin-bottom: 15px;
+        }
 
-         .header h1 {
-             margin: 0;
-             font-size: 18px;
-         }
+        .header-table td {
+            padding: 5px;
+            vertical-align: top;
+        }
 
-         .header p {
-             margin: 5px 0;
-             font-size: 10px;
-         }
+        .header-table .logo {
+            width: 60px;
+            text-align: center;
+            font-weight: bold;
+        }
 
-         table {
-             width: 100%;
-             border-collapse: collapse;
-             margin-bottom: 20px;
-         }
+        .header-table .title-section {
+            text-align: center;
+        }
 
-         th,
-         td {
-             border: 1px solid #666;
-             padding: 6px;
-             text-align: left;
-         }
+        .title-section h1 {
+            margin: 0;
+            font-size: 16px;
+        }
 
-         th {
-             background-color: #f2f2f2;
-             font-weight: bold;
-             font-size: 10px;
-         }
+        .title-section p {
+            margin: 0;
+            font-size: 10px;
+        }
 
-         .report-item-table {
-             margin-top: 5px;
-             margin-bottom: 10px;
-             width: 95%;
-             margin-left: 2.5%;
-         }
+        .info-table {
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 9px;
+        }
 
-         .report-item-table th,
-         .report-item-table td {
-             border: 1px solid #ccc;
-             padding: 4px;
-             font-size: 9px;
-         }
+        .info-table td {
+            padding: 2px 5px;
+        }
 
-         .report-item-table th {
-             background-color: #e9e9e9;
-         }
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-         .page-break {
-             page-break-after: always;
-         }
+        .main-table th,
+        .main-table td {
+            border: 1px solid #666;
+            padding: 5px;
+            text-align: left;
+        }
 
-         .footer {
-             position: fixed;
-             bottom: -30px;
-             left: 0;
-             right: 0;
-             text-align: center;
-             font-size: 8px;
-         }
+        .main-table th {
+            background-color: #e9e9e9;
+            font-weight: bold;
+            text-align: center;
+        }
 
-         .footer .page-number:before {
-             content: "Halaman " counter(page);
-         }
+        .main-table .item-row td {
+            background-color: #f8f8f8;
+        }
 
-         .filter-info {
-             font-size: 9px;
-             margin-bottom: 15px;
-             color: #333;
-         }
-     </style>
- </head>
+        .main-table .item-details {
+            padding-left: 20px !important;
+        }
 
- <body>
-     <div class="header">
-         <h1>{{ $judulLaporan ?? 'Laporan Harian Proyek' }}</h1>
-         @if (isset($periodeFilter) && !empty($periodeFilter))
-             <p>Periode/Filter: {{ $periodeFilter }}</p>
-         @endif
-         <p>Tanggal Cetak: {{ \Carbon\Carbon::now()->isoFormat('D MMMM YYYY, HH:mm') }}</p>
-     </div>
+        .text-center {
+            text-align: center;
+        }
 
-     <div class="container">
-         @if ($reports->isEmpty())
-             <p>Tidak ada data laporan untuk ditampilkan.</p>
-         @else
-             <table>
-                 <thead>
-                     <tr>
-                         <th>ID</th>
-                         <th>Proyek</th>
-                         <th>Pelaksana</th>
-                         <th>Tgl Laporan</th>
-                         <th>Status</th>
-                     </tr>
-                 </thead>
-                 <tbody>
-                     @foreach ($reports as $report)
-                         <tr>
-                             <td>#{{ $report->id }}</td>
-                             <td>{{ $report->project->nama_proyek ?? 'N/A' }}</td>
-                             <td>{{ $report->user->name ?? 'N/A' }}</td>
-                             <td>{{ \Carbon\Carbon::parse($report->tanggal_laporan)->isoFormat('D MMM YY') }}</td>
-                             <td>{{ ucfirst($report->status_laporan) }}</td>
-                         </tr>
-                         @if ($report->reportItems->count() > 0)
-                             <tr>
-                                 <td colspan="5" style="padding:0;">
-                                     <table class="report-item-table">
-                                         <thead>
-                                             <tr>
-                                                 <th>Jenis Pekerjaan</th>
-                                                 <th>P (m)</th>
-                                                 <th>L (m)</th>
-                                                 <th>T/T (m)</th>
-                                                 <th>Volume</th>
-                                                 <th>Satuan</th>
-                                                 <th>Catatan</th>
-                                             </tr>
-                                         </thead>
-                                         <tbody>
-                                             @foreach ($report->reportItems as $item)
-                                                 <tr>
-                                                     <td>{{ $item->jenis_pekerjaan }}</td>
-                                                     <td>{{ !is_null($item->panjang) ? number_format($item->panjang, 2, ',', '.') : '-' }}
-                                                     </td>
-                                                     <td>{{ !is_null($item->lebar) ? number_format($item->lebar, 2, ',', '.') : '-' }}
-                                                     </td>
-                                                     <td>{{ !is_null($item->tinggi_atau_tebal) ? number_format($item->tinggi_atau_tebal, 2, ',', '.') : '-' }}
-                                                     </td>
-                                                     <td>{{ number_format($item->volume_dihitung, 2, ',', '.') }}</td>
-                                                     <td>{{ $item->satuan_volume }}</td>
-                                                     <td>{{ $item->catatan_item ?? '-' }}</td>
-                                                 </tr>
-                                             @endforeach
-                                         </tbody>
-                                     </table>
-                                 </td>
-                             </tr>
-                         @endif
-                     @endforeach
-                 </tbody>
-             </table>
-         @endif
-     </div>
+        .text-right {
+            text-align: right;
+        }
 
-     <div class="footer">
-         <span class="page-number"></span>
-     </div>
- </body>
+        .footer {
+            position: fixed;
+            bottom: -30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 8px;
+        }
 
- </html>
+        .footer .page-number:before {
+            content: "Halaman " counter(page);
+        }
+    </style>
+</head>
 
+<body>
+    <header>
+        <table class="header-table">
+            <tr>
+                <td class="logo">[LOGO APLIKASI]</td>
+                <td class="title-section">
+                    <h1>{{ $judulLaporan ?? 'Laporan Harian Proyek' }}</h1>
+                    <p>PT. Sinergi Inovasi Konstruksi (Contoh)</p>
+                    <p>Jl. Pembangunan No. 123, Garut, Jawa Barat</p>
+                </td>
+                <td style="width: 60px;"></td>
+            </tr>
+        </table>
+    </header>
+
+    <main>
+        <table class="info-table">
+            <tr>
+                <td style="width: 15%;"><strong>Filter Aktif:</strong></td>
+                <td>{{ !empty($periodeFilter) ? $periodeFilter : 'Semua Data' }}</td>
+            </tr>
+            <tr>
+                <td><strong>Dicetak Oleh:</strong></td>
+                <td>{{ $dicetakOleh ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td><strong>Tanggal Cetak:</strong></td>
+                <td>{{ \Carbon\Carbon::now()->isoFormat('dddd, D MMMM finalListQiwi, HH:mm:ss') }}</td>
+            </tr>
+        </table>
+
+        @if ($reports->isEmpty())
+            <p>Tidak ada data laporan untuk ditampilkan.</p>
+        @else
+            <table class="main-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">ID</th>
+                        <th style="width: 15%;">Proyek</th>
+                        <th style="width: 15%;">Pelaksana</th>
+                        <th style="width: 10%;">Tgl Laporan</th>
+                        <th style="width: 25%;">Jenis Pekerjaan & Detail</th>
+                        <th style="width: 10%;">Volume</th>
+                        <th style="width: 20%;">Catatan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($reports as $report)
+                        <tr style="background-color: #f0f8ff;">
+                            <td class="text-center"><strong>#{{ $report->id }}</strong></td>
+                            <td><strong>{{ $report->project->nama_proyek ?? 'N/A' }}</strong></td>
+                            <td><strong>{{ $report->user->name ?? 'N/A' }}</strong></td>
+                            <td class="text-center">
+                                <strong>{{ \Carbon\Carbon::parse($report->tanggal_laporan)->isoFormat('D MMM YY') }}</strong>
+                            </td>
+                            <td colspan="3">Status: <strong>{{ ucfirst($report->status_laporan) }}</strong>
+                                @if ($report->status_laporan == 'rejected' && $report->catatan_admin)
+                                    <br><small>Catatan Admin: {{ $report->catatan_admin }}</small>
+                                @endif
+                            </td>
+                        </tr>
+                        @if ($report->reportItems->count() > 0)
+                            @foreach ($report->reportItems as $item)
+                                <tr class="item-row">
+                                    <td></td>
+                                    <td colspan="3"></td>
+                                    <td class="item-details">
+                                        <strong>{{ $item->jenis_pekerjaan }}</strong><br>
+                                        <small>
+                                            @if (!is_null($item->panjang))
+                                                P: {{ $item->panjang }}m;
+                                            @endif
+                                            @if (!is_null($item->lebar))
+                                                L: {{ $item->lebar }}m;
+                                            @endif
+                                            @if (!is_null($item->tinggi_atau_tebal))
+                                                T/T: {{ $item->tinggi_atau_tebal }}m;
+                                            @endif
+                                        </small>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>{{ number_format($item->volume_dihitung, 2, ',', '.') }}
+                                            {{ $item->satuan_volume }}</strong></td>
+                                    <td><small>{{ $item->catatan_item ?? '-' }}</small></td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr class="item-row">
+                                <td></td>
+                                <td colspan="6" style="padding-left: 20px;"><em>Tidak ada detail item pekerjaan untuk
+                                        laporan ini.</em></td>
+                            </tr>
+                        @endif
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+    </main>
+
+    <div class="footer">
+        <span class="page-number"></span>
+    </div>
+</body>
+
+</html>
