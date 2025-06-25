@@ -33,22 +33,29 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $validateData = $request->validate([
+        $validatedData = $request->validate([
             'nama_proyek' => 'required|string|max:255',
-            'lokasi' => 'required|string|max:255',
+            'kecamatan' => 'required|string|max:255', // Validasi untuk kecamatan
+            'desa' => 'required|string|max:255',      // Validasi untuk desa
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-            'jenis_proyek' => 'required|string|max:100',
-
+            'jenis_proyek' => 'required|string|max:255',
         ]);
 
         // Tambahkan ID admin yang membuat jika perlu
         // $validatedData['created_by_admin_id'] = Auth::id();
 
-        Project::create($validateData);
+        Project::create([
+            'nama_proyek' => $validatedData['nama_proyek'],
+            'lokasi' => $validatedData['kecamatan'] . ', ' . $validatedData['desa'], // Gabungkan kecamatan dan desa
+            'tanggal_mulai' => $validatedData['tanggal_mulai'],
+            'tanggal_selesai' => $validatedData['tanggal_selesai'],
+            'jenis_proyek' => $validatedData['jenis_proyek'],
+        ]);
 
-        return redirect()->route('admin.projects.index')->with('success', 'proyek berhasil ditambahkan.');
+        return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil ditambahkan.');
     }
+
 
     /**
      * menampilkan detail proyek. ( belum beres )
@@ -63,14 +70,15 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        // Ambil semua user dengan role 'pelaksana'
         $pelaksanas = User::where('role', 'pelaksana')->orderBy('name')->get();
-
-        // Ambil ID pelaksana yang saat ini sudah ditugaskan ke proyek ini
-        // pluck('id') akan mengambil hanya kolom 'id' dan toArray() mengubahnya menjadi array biasa
         $assignedPelaksanaIds = $project->assignedUsers()->pluck('users.id')->toArray();
 
-        return view('admin.projects.edit', compact('project', 'pelaksanas', 'assignedPelaksanaIds'));
+        // Pecah lokasi menjadi kecamatan dan desa untuk form edit
+        $lokasiParts = explode(', ', $project->lokasi);
+        $kecamatan = $lokasiParts[0] ?? '';
+        $desa = $lokasiParts[1] ?? '';
+
+        return view('admin.projects.edit', compact('project', 'pelaksanas', 'assignedPelaksanaIds', 'kecamatan', 'desa'));
     }
     /**
      * Mengupdate proyek di database.
@@ -79,18 +87,19 @@ class ProjectController extends Controller
     {
         $validatedData = $request->validate([
             'nama_proyek' => 'required|string|max:255',
-            'lokasi' => 'required|string|max:255',
+            'kecamatan' => 'required|string|max:255',
+            'desa' => 'required|string|max:255',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-            'jenis_proyek' => 'required|string|max:100',
-            'pelaksana_ids' => 'nullable|array', // Boleh kosong, tapi jika ada harus array
-            'pelaksana_ids.*' => ['nullable', 'integer', Rule::exists('users', 'id')->where('role', 'pelaksana')], // Setiap ID harus ada di tabel users dan role-nya pelaksana
+            'jenis_proyek' => 'required|string|max:255',
+            'pelaksana_ids' => 'nullable|array',
+            'pelaksana_ids.*' => ['nullable', 'integer', Rule::exists('users', 'id')->where('role', 'pelaksana')],
         ]);
 
         // Update data utama proyek
         $project->update([
             'nama_proyek' => $validatedData['nama_proyek'],
-            'lokasi' => $validatedData['lokasi'],
+            'lokasi' => $validatedData['kecamatan'] . ', ' . $validatedData['desa'],
             'tanggal_mulai' => $validatedData['tanggal_mulai'],
             'tanggal_selesai' => $validatedData['tanggal_selesai'],
             'jenis_proyek' => $validatedData['jenis_proyek'],

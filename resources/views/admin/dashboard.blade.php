@@ -172,7 +172,7 @@
                             position: 'bottom', //Posisi legenda di bawah
                             labels: {
                                 color: document.documentElement.classList.contains('dark') ? '#E5E7EB' :
-                                    '#4B5563', // Warna teks legenda
+                                    '#FFFFFF', // Warna teks legenda
                                 font: {
                                     size: 12
                                 }
