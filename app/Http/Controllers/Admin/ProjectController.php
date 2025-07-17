@@ -57,11 +57,11 @@ class ProjectController extends Controller
     }
 
 
-    /**
-     * menampilkan detail proyek. ( belum beres )
-     */
+
     public function show(Project $project)
     {
+        // Eager load relasi untuk menghindari N+1 query problem
+        $project->load(['assignedUsers', 'profilPerusahaan', 'tenagaKerja']);
         return view('admin.projects.show', compact('project'));
     }
 

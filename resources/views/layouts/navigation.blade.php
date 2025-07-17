@@ -20,9 +20,12 @@
                         <x-nav-link :href="route('admin.projects.index')" :active="request()->routeIs('admin.projects.*')">
                             {{ __('Manajemen Proyek') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('admin.reports.index')" :active="request()->routeIs('admin.reports.*')">
-                            {{ __('Laporan Harian') }}
+
+                        <!-- LINK BARU UNTUK FITUR LAPORAN -->
+                        <x-nav-link :href="route('admin.laporan.index')" :active="request()->routeIs('admin.laporan.*')">
+                            {{ __('Laporan') }}
                         </x-nav-link>
+
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                             {{ __('Manajemen Pengguna') }}
                         </x-nav-link>
@@ -37,6 +40,9 @@
                         </x-nav-link>
                         <x-nav-link :href="route('pelaksana.reports.history')" :active="request()->routeIs('pelaksana.reports.*')">
                             {{ __('Riwayat Laporan') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.laporan.index')" :active="request()->routeIs('admin.laporan.*')">
+                            {{ __('Laporan') }}
                         </x-nav-link>
                     @endif
                 </div>

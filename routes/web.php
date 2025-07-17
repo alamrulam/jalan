@@ -10,7 +10,11 @@ use App\Http\Controllers\Admin\DailyReportController as AdminDailyReportControll
 use App\Http\Controllers\Admin\DashboardController; // Tambahkan ini di atas
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Pelaksana\DashboardController as PelaksanaDashboardController;
-
+use App\Http\Controllers\Admin\ProfilPerusahaanController;
+use App\Http\Controllers\Admin\TenagaKerjaController;
+use App\Http\Controllers\Admin\JenisPekerjaanController;
+use App\Http\Controllers\Pelaksana\PembayaranController;
+use App\Http\Controllers\Admin\LaporanController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -55,6 +59,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Rute admin lainnya bisa ditambahkan di sini jika ada
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('users', UserController::class);
+    Route::get('projects/{project}/profil/edit', [ProfilPerusahaanController::class, 'edit'])->name('profil.edit');
+    Route::put('projects/{project}/profil', [ProfilPerusahaanController::class, 'update'])->name('profil.update');
+    Route::resource('projects.tenaga-kerja', TenagaKerjaController::class)->except(['show']);
+    Route::resource('projects.jenis-pekerjaan', JenisPekerjaanController::class)->except(['show']);
+    Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::post('laporan/export', [LaporanController::class, 'export'])->name('laporan.export');
 });
 
 
@@ -78,6 +88,7 @@ Route::middleware(['auth', 'pelaksana'])->prefix('pelaksana')->name('pelaksana.'
     Route::get('laporan-saya/{report}', [PelaksanaDailyReportController::class, 'showReportDetail'])->name('reports.showDetail');
     Route::get('laporan-saya/{report}/edit-revisi', [PelaksanaDailyReportController::class, 'editRevision'])->name('reports.editRevision');
     Route::put('laporan-saya/{report}/update-revisi', [PelaksanaDailyReportController::class, 'updateRevision'])->name('reports.updateRevision');
+    Route::resource('projects.pembayaran', PembayaranController::class);
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

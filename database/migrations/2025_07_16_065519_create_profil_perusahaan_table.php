@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('daily_reports', function (Blueprint $table) {
+        Schema::create('profil_perusahaan', function (Blueprint $table) {
             $table->id();
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Pelaksana yang membuat laporan
-            $table->date('tanggal_laporan');
-            $table->string('status_laporan')->default('pending'); // Contoh status: pending, verified, rejected
-            $table->text('catatan_admin')->nullable(); // Catatan dari admin jika ada koreksi atau penolakan
+            $table->string('nama_lembaga');
+            $table->text('alamat');
+            $table->string('nama_ketua');
+            $table->string('kontak')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('daily_reports');
+        Schema::dropIfExists('profil_perusahaan');
     }
 };

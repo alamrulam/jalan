@@ -40,4 +40,21 @@ class Project extends Model
     {
         return $this->belongsToMany(User::class, 'project_user', 'project_id', 'user_id');
     }
+
+    public function profilPerusahaan()
+    {
+        return $this->hasOne(ProfilPerusahaan::class);
+    }
+    public function tenagaKerja()
+    {
+        return $this->hasMany(TenagaKerja::class);
+    }
+    public function jenisPekerjaan()
+    {
+        return $this->hasMany(JenisPekerjaan::class);
+    }
+    public function pembayaran()
+    {
+        return $this->hasMany(Pembayaran::class);
+    }
 }
